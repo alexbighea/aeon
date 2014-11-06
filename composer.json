@@ -1,0 +1,21 @@
+{
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "entity id generator"
+    ],
+    "authors": [
+        {
+            "name": "Alex Bighea",
+            "email": "alex@bighea.com"
+        }
+    ],
+    "require": { 
+        "moontoast/math": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Aeon\\": ["src/"]
+        }
+    }
+}

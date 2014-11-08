@@ -11,8 +11,9 @@
             "email": "alex@bighea.com"
         }
     ],
-    "require": { 
-        "zendframework/zend-math": "2.3.*@dev"
+    "require": { },
+    "require-dev": {
+        "phpunit/phpunit": "4.3.4"
     },
     "autoload": {
         "psr-4": {

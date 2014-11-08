@@ -3,7 +3,7 @@
 namespace Aeon;
 
 use InvalidArgumentException;
-use Moontoast\Math\BigNumber;
+use Zend\Math\BigInteger\Adapter\Bcmath;
 
 class IdGenerator
 {
@@ -14,7 +14,17 @@ class IdGenerator
     protected $lastSeq = 0;
     protected $epoque = 1324512000000; //42 years
 
+    /** @var  \Zend\Math\BigInteger\Adapter\AdapterInterface */
+    protected $math;
+
     private $machineIdBin = '000000';
+
+    function __construct()
+    {
+        if (PHP_INT_SIZE == 4) {
+            $this->math = new Bcmath();
+        }
+    }
 
     /**
      * @return int
@@ -30,16 +40,12 @@ class IdGenerator
     public function setMachineId($machineId)
     {
         if ($machineId < 0 || $machineId > self::MACHINE_ID_MAX) {
-            throw new InvalidArgumentException("Machine ID must be a 6 bit integer (max 65535).");
+            throw new InvalidArgumentException(
+                sprintf("Machine ID must be a 6 bit integer (max %s).", self::MACHINE_ID_MAX));
         }
 
         $this->machineId = $machineId;
         $this->machineIdBin = sprintf("%06b", $machineId);
-    }
-
-    function __construct()
-    {
-
     }
 
     public function generate()
@@ -57,8 +63,8 @@ class IdGenerator
         }
 
         $seqBin = sprintf("%016b", $this->lastSeq++);
-        $timeBin = sprintf("%042s", BigNumber::baseConvert($time, 10, 2));
+        $timeBin = sprintf("%042s", $this->math->baseConvert($time, 10, 2));
 
-        return BigNumber::convertToBase10($timeBin . $this->machineIdBin . $seqBin, 2);
+        return $this->math->baseConvert($timeBin . $this->machineIdBin . $seqBin, 2);
     }
 }
